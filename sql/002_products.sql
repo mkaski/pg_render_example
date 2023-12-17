@@ -1,8 +1,14 @@
+set search_path to api, public;
+
 -- create a table for templates
 create table templates (id text not null, template text not null);
 
 -- create a table for products
 create table products (id text not null, name text not null, price integer not null, description text not null, image_url text not null);
+
+-- postgrest setup
+grant select on products to web_anon;
+grant select on templates to web_anon;
 
 -- create example products
 insert into products  (id, name, price, description, image_url) values
@@ -15,6 +21,7 @@ insert into templates (id, template) values ('layout', '
 <html>
   <head>
     <title>{{ title }}</title>
+    <style>{{ styles }}</style>
   </head>
   <body>
     {{ header }}
@@ -27,14 +34,14 @@ insert into templates (id, template) values ('layout', '
 -- create header template
 insert into templates (id, template) values ('header', '
 <header>
-  <h1>Example</h1>
+  <h1>Layout Example</h1>
 </header>
 ');
 
 -- create footer template
 insert into templates (id, template) values ('footer', '
 <footer>
-  <p>Example</p>
+  <p>Footer content</p>
 </footer>
 ');
 
@@ -52,18 +59,47 @@ insert into templates (id, template) values ('products', '
 </ul>
 ');
 
+insert into templates (id, template) values ('styles', '
+  body, html { margin: 0; padding: 0; }
+  body {
+    font-family: sans-serif;
+  }
+  header {
+    background-color: #eee;
+    padding: 1em;
+  }
+  footer {
+    background-color: #eee;
+    padding: 1em;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 1em;
+  }
+  li {
+    padding: 1em;
+    border-bottom: 1px solid #eee;
+  }
+  img {
+    max-width: 100%;
+  }
+');
+
 -- serve full page using postgREST
 create or replace function api.products() returns "text/html" as $$
   select render(
     (select template from templates where id = 'layout'),
     (json_build_object(
-      'title', 'Hello World',
+      'title', 'Products',
+      'styles', (select template from templates where id = 'styles'),
       'header', (select template from templates where id = 'header'),
-      'children', (
-        select render(
+      'children', (select render(
           (select template from templates where id = 'products'),
           (select json_agg(to_json(products.*)) from products)
-      ),
+      )),
       'footer', (select template from templates where id = 'footer')
     ))
   );
