@@ -88,7 +88,7 @@ insert into templates (id, template) values ('styles', '
   }
 ');
 
--- serve full page using postgREST
+-- serve full page using postgREST at http://localhost:3000/rpc/products
 create or replace function api.products() returns "text/html" as $$
   select render(
     (select template from templates where id = 'layout'),
