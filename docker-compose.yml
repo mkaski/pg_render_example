@@ -8,7 +8,7 @@ services:
       PGRST_DB_URI: postgres://app_user:password@db:5432/db
       PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
       PGRST_DB_SCHEMA: api
-      PGRST_DB_ANON_ROLE: api_anon
+      PGRST_DB_ANON_ROLE: web_anon
     depends_on:
       - db
   db:
@@ -20,4 +20,4 @@ services:
       POSTGRES_USER: app_user
       POSTGRES_PASSWORD: password
     volumes:
-    - ./schema.sql:/docker-entrypoint-initdb.d
+    - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql

@@ -2,8 +2,10 @@
 create extension if not exists pg_render;
 
 -- PostgREST setup
-create domain "text/html" as text;
+create schema api;
+create role web_anon nologin;
 grant usage on schema api to web_anon;
+create domain "text/html" as text;
 
 -- hello world index page
 create or replace function api.index() returns "text/html" as $$
