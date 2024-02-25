@@ -1,37 +1,41 @@
-# pg_render_postgres
-# Use the official PostgreSQL image as the base image
-FROM postgres:15
+ARG PG_VERSION=15
+FROM postgres:${PG_VERSION}
+RUN apt-get update
 
-# Set environment variables for PostgreSQL
-ENV POSTGRES_DB=db
-ENV POSTGRES_USER=myuser
-ENV POSTGRES_PASSWORD=mypassword
+ENV build_deps ca-certificates \
+  git \
+  openssh-client \
+  build-essential \
+  libpq-dev \
+  postgresql-server-dev-${PG_MAJOR} \
+  curl \
+  libreadline6-dev \
+  zlib1g-dev
 
-# Switch to the root user to install the custom extension
-USER root
+RUN apt-get install -y --no-install-recommends $build_deps pkg-config cmake
 
-# Install necessary dependencies, including ca-certificates
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        wget \
-        ca-certificates \
-        postgresql-server-dev-all \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /home/pg_render
 
-# Download and install the custom extension .deb package
-WORKDIR /tmp
-# TODO: This for AMD64 only, need to add ARM64 support
-RUN wget https://github.com/mkaski/pg_render/releases/download/v0.5.0/pg_render-v0.5.0-pg15-amd64-linux-gnu.deb \
-    && dpkg -i pg_render-v0.5.0-pg15-amd64-linux-gnu.deb \
-    && apt-get install -f \
-    && rm -rf pg_render-v0.5.0-pg15-amd64-linux-gnu.deb
+# Clone pg_render repo from GitHub using HTTPS URL
+RUN git clone https://github.com/mkaski/pg_render.git .
 
-# Switch back to the postgres user
+ENV PATH="/home/pg_render/.cargo/bin:${PATH}" \
+  HOME=/home/pg_render
+RUN chown -R postgres:postgres /home/pg_render
 USER postgres
 
-# Expose the PostgreSQL port
-EXPOSE 5432
+RUN \
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile minimal --default-toolchain nightly && \
+  rustup --version && \
+  rustc --version && \
+  cargo --version
 
-# Start PostgreSQL
-CMD ["postgres"]
+# PGRX
+RUN cargo install cargo-pgrx --version 0.11.3 --locked
+RUN cargo pgrx init --pg${PG_MAJOR} $(which pg_config)
+
+USER root
+
+RUN cargo pgrx install
+
+USER postgres

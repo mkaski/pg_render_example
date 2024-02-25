@@ -1,17 +1,17 @@
-# PostgREST + pg_render
+# PostgREST + pg_render + HTMX
 
-This is a simple example of using [PostgREST](https://postgrest.org) with [pg_render](https://github.com/mkaski/pg_render) to render HTML in SQL.
+Example blog implementation with infinite scrolling, and dynamic "Like" button for posts using only declarative SQL and HTMX.
 
-## Build
+- [pg_render](https://github.com/mkaski/pg_render)
+- [PostgREST](https://postgrest.org)
+- [htmx](https://htmx.org)
+
+## Getting started
 
 ```bash
-# Build postgres with the extension installed
-docker build -t pg_render_postgres .
-# Run PostgREST with the db
-docker-compose up
-# Navigate to http://localhost:3000/rpc/index http://localhost:3000/rpc/products
+# Build pg_render and start a PostgREST server with the extension
+
+$ docker-compose up
+
+# Navigate to http://localhost:3000/
 ```
-
-## Examples
-
-See the [sql](sql) directory for more SQL schema examples.
