@@ -1,16 +1,8 @@
-ARG PG_VERSION=15
+ARG PG_VERSION=16
 FROM postgres:${PG_VERSION}
 RUN apt-get update
 
-ENV build_deps ca-certificates \
-  git \
-  openssh-client \
-  build-essential \
-  libpq-dev \
-  postgresql-server-dev-${PG_MAJOR} \
-  curl \
-  libreadline6-dev \
-  zlib1g-dev
+ENV build_deps="ca-certificates git openssh-client build-essential libpq-dev postgresql-server-dev-${PG_MAJOR} curl libreadline6-dev zlib1g-dev"
 
 RUN apt-get install -y --no-install-recommends $build_deps pkg-config cmake
 
@@ -31,7 +23,7 @@ RUN \
   cargo --version
 
 # PGRX
-RUN cargo install cargo-pgrx --version 0.11.3 --locked
+RUN cargo install cargo-pgrx --version 0.12.8 --locked
 RUN cargo pgrx init --pg${PG_MAJOR} $(which pg_config)
 
 USER root

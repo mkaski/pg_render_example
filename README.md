@@ -13,5 +13,5 @@ Example blog implementation with infinite scrolling, and dynamic "Like" button f
 
 $ docker-compose up
 
-# Navigate to http://localhost:3000/
+# Navigate to http://localhost:8080/ 
 ```
