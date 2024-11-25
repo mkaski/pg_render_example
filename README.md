@@ -6,6 +6,10 @@ Example blog implementation with infinite scrolling, and dynamic "Like" button f
 - [PostgREST](https://postgrest.org)
 - [htmx](https://htmx.org)
 
+## Demo
+
+Live demo: [pgrender.org](https://pgrender.org/)
+
 ## Getting started
 
 ```bash
