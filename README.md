@@ -17,5 +17,5 @@ Live demo: [example.pgrender.org](https://example.pgrender.org/)
 
 $ docker-compose up
 
-# Navigate to http://localhost:8080/ 
+# Navigate to http://localhost:8082/ 
 ```
