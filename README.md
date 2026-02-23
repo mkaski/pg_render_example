@@ -8,7 +8,7 @@ Example blog implementation with infinite scrolling, and dynamic "Like" button f
 
 ## Demo
 
-Live demo: [pgrender.org](https://example.pgrender.org/)
+Live demo: [example.pgrender.org](https://example.pgrender.org/)
 
 ## Getting started
 

@@ -22,7 +22,7 @@ insert into templates (id, template) values
 insert into templates (id, template) values
     ('header', '
     <header>
-        <h1><a href="/">pgrender.org</a></h1>
+        <h1><a href="/">example.pgrender.org</a></h1>
         <h4>Example site running pg_render, PostgREST and HTMX</h4>
         <code><a href="https://github.com/mkaski/pg_render_example">View source</a></code>
     </header>'
